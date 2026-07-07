@@ -1,0 +1,8 @@
+ <footer className="mt-auto py-3 bg-body-tertiary border-top">
+      <div className="container small text-muted d-flex flex-column flex-sm-row text-center ">
+        <span>
+          Crafted with <i className="bi bi-heart-fill text-primary"></i> by
+          DotNetMastery
+        </span>
+      </div>
+    </footer>
