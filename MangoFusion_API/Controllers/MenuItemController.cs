@@ -13,11 +13,13 @@ namespace MangoFusion_API.Controllers
         private readonly ApiResponse _response;
         private readonly ApplicationDbContext _db;
         private readonly IWebHostEnvironment _env;
+        private readonly ILogger<MenuItemController> _logger;
 
-        public MenuItemController(ApplicationDbContext db, IWebHostEnvironment env)
+        public MenuItemController(ApplicationDbContext db, IWebHostEnvironment env, ILogger<MenuItemController> logger)
         {
             _db = db;
             _env = env;
+            _logger = logger;
             _response = new ApiResponse();
         }
 
