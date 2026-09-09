@@ -24,7 +24,6 @@ namespace MangoFusion_API.Models.Dto
         public double Price { get; set; }
 
         // Media
-        [Required]
         public IFormFile? Image { get; set; } 
     }
 }

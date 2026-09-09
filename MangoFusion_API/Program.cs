@@ -78,15 +78,17 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseDefaultFiles();
-
 app.UseStaticFiles();
-
 app.UseHttpsRedirection();
 
+app.UseCors(c => c
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .WithExposedHeaders("*"));
+
 app.UseAuthentication();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

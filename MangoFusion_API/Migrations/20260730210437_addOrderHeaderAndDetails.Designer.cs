@@ -4,6 +4,7 @@ using MangoFusion_API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MangoFusion_API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260730210437_addOrderHeaderAndDetails")]
+    partial class addOrderHeaderAndDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -248,9 +251,6 @@ namespace MangoFusion_API.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Rating")
-                        .HasColumnType("int");
-
                     b.HasKey("OrderDetailsId");
 
                     b.HasIndex("MenuItemId");
@@ -444,7 +444,7 @@ namespace MangoFusion_API.Migrations
                         .IsRequired();
 
                     b.HasOne("MangoFusion_API.Models.OrderHeader", null)
-                        .WithMany("OrderDetails")
+                        .WithMany("OrderDetailsList")
                         .HasForeignKey("OrderHeaderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -514,7 +514,7 @@ namespace MangoFusion_API.Migrations
 
             modelBuilder.Entity("MangoFusion_API.Models.OrderHeader", b =>
                 {
-                    b.Navigation("OrderDetails");
+                    b.Navigation("OrderDetailsList");
                 });
 #pragma warning restore 612, 618
         }

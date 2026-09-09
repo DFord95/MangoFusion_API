@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MangoFusion_API.Models
 {
@@ -26,5 +27,9 @@ namespace MangoFusion_API.Models
         // Media
         [Required]
         public string Image { get; set; } = string.Empty;
+        
+        // Rating
+        [NotMapped]
+        public double Rating { get; set; }
     }
 }

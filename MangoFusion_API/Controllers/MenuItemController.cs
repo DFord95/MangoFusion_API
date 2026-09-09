@@ -26,7 +26,25 @@ namespace MangoFusion_API.Controllers
         [HttpGet]
         public IActionResult GetMenuItems()
         {
-            _response.Result = _db.MenuItems.ToList();
+            List<MenuItem> menuItems = _db.MenuItems.ToList();
+
+            List<OrderDetails> orderDetailsWithRatings = _db.OrderDetails.Where(od => od.Rating != null).ToList();
+
+            foreach (var menuItem in menuItems)
+            {
+                var rating = orderDetailsWithRatings
+                    .Where(od => od.MenuItemId == menuItem.Id)
+                    .Select(od => od.Rating)
+                    .Where(r => r.HasValue)
+                    .Select(r => r.GetValueOrDefault())
+                    .ToList();
+
+                double averageRating = rating.Any() ? rating.Average() : 0;
+
+                menuItem.Rating = averageRating;
+            }
+
+            _response.Result = menuItems;
             _response.StatusCode = HttpStatusCode.OK;
 
             return Ok(_response);
@@ -44,6 +62,27 @@ namespace MangoFusion_API.Controllers
             }
 
             MenuItem? menuItem = _db.MenuItems.FirstOrDefault(mi => mi.Id == id);
+
+            if (menuItem == null)
+            {
+                _response.IsSuccess = false;
+                _response.StatusCode = HttpStatusCode.NotFound;
+                _response.ErrorMessages = ["Menu item not found."];
+
+                return NotFound(_response);
+            }
+
+            List<OrderDetails> orderDetailsWithRatings = _db.OrderDetails.Where(od => od.Rating != null && od.MenuItemId == menuItem.Id).ToList();
+
+            var rating = orderDetailsWithRatings
+                .Select(od => od.Rating)
+                .Where(r => r.HasValue)
+                .Select(r => r.GetValueOrDefault())
+                .ToList();
+
+            double averageRating = rating.Any() ? rating.Average() : 0;
+
+            menuItem.Rating = averageRating;
 
             _response.Result = menuItem;
             _response.StatusCode = HttpStatusCode.OK;
