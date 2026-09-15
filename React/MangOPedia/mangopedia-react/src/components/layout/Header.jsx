@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { ROUTES } from "../../utilities/constant";
+import { ROUTES } from "../../utilities/constants";
 
 function Header() {
   return (
@@ -85,7 +85,7 @@ function Header() {
                 </li>
                 <li>
                   <NavLink
-                    to={ROUTES.MENU_MANAGEMENT}
+                    to={ROUTES.MENU_ITEM_MANAGEMENT}
                     className="dropdown-item d-flex align-items-center gap-2 rounded-2"
                   >
                     <i className="bi bi-list-ul text-primary"></i>

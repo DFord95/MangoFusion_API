@@ -7,7 +7,7 @@ import CheckOut from "../pages/cart/CheckOut";
 import MenuItemManagement from "../pages/menu/MenuItemManagement";
 import OrderConfirmation from "../pages/order/OrderConfirmation";
 import OrderManagement from "../pages/order/OrderManagement";
-import { ROUTES } from "../utilities/constant";
+import { ROUTES } from "../utilities/constants";
 
 const AppRoutes = () => {
   return (
