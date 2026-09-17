@@ -90,7 +90,7 @@ namespace MangoFusion_API.Controllers
             return Ok(_response);
         }
 
-        [HttpPost, Consumes("multipart/form-data")]
+        [HttpPut, Consumes("multipart/form-data")]
         public async Task<ActionResult<ApiResponse>> CreateMenuItem([FromForm] MenuItemCreateDTO menuItemCreateDTO)
         {
             try
@@ -158,7 +158,7 @@ namespace MangoFusion_API.Controllers
             return BadRequest(_response);
         }
 
-        [HttpPut, Consumes("multipart/form-data")]
+        [HttpPut("{id}"), Consumes("multipart/form-data")]
         public async Task<ActionResult<ApiResponse>> UpdateMenuItem(int id, [FromForm] MenuItemUpdateDTO menuItemUpdateDTO)
         {
             try

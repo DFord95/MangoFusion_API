@@ -1,6 +1,13 @@
 import { API_BASE_URL } from "../../utilities/constants";
 
-function MenuItemsTable({ menuItems, isLoading, error, refetch }) {
+function MenuItemsTable({
+  menuItems,
+  isLoading,
+  error,
+  refetch,
+  onEdit,
+  onDelete,
+}) {
   if (isLoading) {
     return (
       <div className="text-center py-4">
@@ -85,12 +92,14 @@ function MenuItemsTable({ menuItems, isLoading, error, refetch }) {
                     <button
                       className="btn btn-sm btn-outline-success"
                       title="Edit"
+                      onClick={() => onEdit(menuItem)}
                     >
                       <i className="bi bi-pencil"></i>
                     </button>
                     <button
                       className="btn btn-sm btn-outline-danger"
                       title="Delete"
+                      onClick={() => onDelete(menuItem)}
                     >
                       <i className="bi bi-trash"></i>
                     </button>

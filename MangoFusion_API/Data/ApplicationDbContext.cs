@@ -46,7 +46,7 @@ namespace MangoFusion_API.Data
                 Id = 3,
                 Name = "Soup",
                 Description = "Fusc tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
-                Image = "images/soup.jpg",
+                Image = "images/malai_kofta_soup.jpg",
                 Price = 8.99,
                 Category = "Appetizer",
                 SpecialTag = "Best Seller"
@@ -56,7 +56,7 @@ namespace MangoFusion_API.Data
                 Id = 4,
                 Name = "Noodles",
                 Description = "Fusc tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
-                Image = "images/noodles.jpg",
+                Image = "images/hakka_noodles.jpg",
                 Price = 10.99,
                 Category = "Entrée",
                 SpecialTag = ""
@@ -76,7 +76,7 @@ namespace MangoFusion_API.Data
                 Id = 6,
                 Name = "Paneer Pizza",
                 Description = "Fusc tincidunt maximus leo, sed scelerisque massa auctor sit amet. Donec ex mauris, hendrerit quis nibh ac, efficitur fringilla enim.",
-                Image = "images/pizza.jpg",
+                Image = "images/paneer_pizza.jpg",
                 Price = 11.99,
                 Category = "Entrée",
                 SpecialTag = ""
