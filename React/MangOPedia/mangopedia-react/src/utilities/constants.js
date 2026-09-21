@@ -7,6 +7,7 @@ export const ROUTES = {
   CART: "/cart",
   CHECKOUT: "/checkout",
   MENU_ITEM_MANAGEMENT: "/menu-item-management",
+  MENU_ITEM_DETAILS: "/menu/:id",
   ORDER_CONFIRMATION: "/order-confirmation",
   ORDER_MANAGEMENT: "/order-management",
 };

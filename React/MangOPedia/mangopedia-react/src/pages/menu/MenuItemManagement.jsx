@@ -90,7 +90,8 @@ function MenuItemManagement() {
       setShowModal(false);
       resetForm();
     } catch (error) {
-      console.log("Error updating form data:", error);
+      console.error("Error saving menu item:", error);
+      toast.error("Failed to save menu item. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -99,7 +100,7 @@ function MenuItemManagement() {
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
 
-    console.log("Input changed:", name, value, files);
+    //console.log("Input changed:", name, value, files);
 
     if (name === "image" && files && files.length > 0) {
       setFormData((prevData) => ({

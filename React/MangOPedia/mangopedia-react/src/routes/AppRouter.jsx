@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import MenuItemDetails from "../pages/menu/MenuItemDetails";
 import Home from "../pages/Home";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
@@ -17,6 +18,7 @@ const AppRoutes = () => {
       <Route path={ROUTES.REGISTER} element={<Register />} />
       <Route path={ROUTES.CART} element={<Cart />} />
       <Route path={ROUTES.CHECKOUT} element={<CheckOut />} />
+      <Route path={ROUTES.MENU_ITEM_DETAILS} element={<MenuItemDetails />} />
       <Route
         path={ROUTES.MENU_ITEM_MANAGEMENT}
         element={<MenuItemManagement />}

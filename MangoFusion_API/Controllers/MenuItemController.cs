@@ -90,7 +90,7 @@ namespace MangoFusion_API.Controllers
             return Ok(_response);
         }
 
-        [HttpPut, Consumes("multipart/form-data")]
+        [HttpPost, Consumes("multipart/form-data")]
         public async Task<ActionResult<ApiResponse>> CreateMenuItem([FromForm] MenuItemCreateDTO menuItemCreateDTO)
         {
             try
