@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../store/slice/cartSlice";
+import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { useGetMenuItemByIdQuery } from "../../store/api/menuItemApi";
 import { API_BASE_URL } from "../../utilities/constants";
@@ -16,10 +19,26 @@ function MenuItemDetails() {
     data: selectedMenuItem,
     error,
     isLoading,
-    refetch,
   } = useGetMenuItemByIdQuery(menuItemId, {
     skip: !isValidatedItemId,
   });
+
+  const dispatch = useDispatch();
+
+  const handleAddToCart = () => {
+    dispatch(
+      addToCart({
+        item: {
+          id: selectedMenuItem.id,
+          name: selectedMenuItem.name,
+          price: selectedMenuItem.price,
+          image: selectedMenuItem.image,
+          quantity: quantity,
+        },
+      }),
+    );
+    toast.success(`${selectedMenuItem.name} added to cart!`);
+  };
 
   if (!isValidatedItemId) {
     return (
@@ -202,7 +221,12 @@ function MenuItemDetails() {
                       </div>
                       <div className="col-sm-7">
                         <div className="d-grid gap-2">
-                          <button className="btn btn-primary btn-lg fw-semibold shadow-sm">
+                          <button
+                            onClick={() =>
+                              handleAddToCart({ ...selectedMenuItem, quantity })
+                            }
+                            className="btn btn-primary btn-lg fw-semibold shadow-sm"
+                          >
                             <i className="bi bi-cart-plus me-2"></i>
                             Add to Cart
                           </button>

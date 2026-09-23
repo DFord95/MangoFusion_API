@@ -14,6 +14,7 @@ function Header() {
   const navigate = useNavigate();
 
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { totalItems } = useSelector((state) => state.cart);
   const firstName = (user?.fullName || user?.name || "User").split(" ")[0];
 
   return (
@@ -60,7 +61,7 @@ function Header() {
                   className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white shadow-sm"
                   style={{ fontSize: "0.7rem" }}
                 >
-                  10
+                  {totalItems > 0 ? totalItems : "0"}
                 </span>
               </NavLink>
             </li>

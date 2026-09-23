@@ -1,9 +1,14 @@
 import { useGetMenuItemsQuery } from "../store/api/menuItemApi";
 import { API_BASE_URL, CATEGORIES } from "../utilities/constants";
 import { useState } from "react";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../store/slice/cartSlice";
 import { Link } from "react-router-dom";
 
 function Home() {
+  const dispatch = useDispatch();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
 
@@ -13,6 +18,21 @@ function Home() {
     isLoading,
     refetch,
   } = useGetMenuItemsQuery();
+
+  const handleAddToCart = (item) => {
+    dispatch(
+      addToCart({
+        item: {
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          image: item.image,
+          quantity: 1,
+        },
+      }),
+    );
+    toast.success(`${item.name} added to cart!`);
+  };
 
   const filteredMenuItems = menuItems.filter((item) => {
     const matchesSearchTerm = searchTerm
@@ -168,8 +188,12 @@ function Home() {
                             </Link>
                           </div>
                           <div className="col-6">
-                            <button className="btn btn-primary w-100 btn-sm fw-semibold">
-                              <i className="bi bi-cart-plus me-1"></i>Add Cart
+                            <button
+                              onClick={() => handleAddToCart(item)}
+                              className="btn btn-primary w-100 btn-sm fw-semibold"
+                            >
+                              <i className="bi bi-cart-plus me-1"></i>Add to
+                              Cart
                             </button>
                           </div>
                         </div>
