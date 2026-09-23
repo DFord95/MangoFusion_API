@@ -16,6 +16,11 @@ export const API_BASE_URL = "https://localhost:7067";
 
 export const CATEGORIES = ["Appetizer", "Entrée", "Dessert"];
 
+export const ROLES = {
+  Admin: "Admin",
+  Customer: "Customer",
+};
+
 export const SPECIAL_TAGS = [
   "Best Seller",
   "Top Rated",

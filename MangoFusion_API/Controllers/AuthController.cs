@@ -82,7 +82,7 @@ namespace MangoFusion_API.Controllers
                 {
                     foreach (var error in result.Errors)
                     {
-                        _response.ErrorMessages?.Add(error.Description);
+                        _response.ErrorMessages.Add(error.Description);
                     }
 
                     _response.StatusCode = HttpStatusCode.BadRequest;
@@ -101,7 +101,7 @@ namespace MangoFusion_API.Controllers
                 {
                     foreach (var item in error.Errors)
                     {
-                        _response.ErrorMessages?.Add(item.ErrorMessage);
+                        _response.ErrorMessages.Add(item.ErrorMessage);
                     }
                 }
 

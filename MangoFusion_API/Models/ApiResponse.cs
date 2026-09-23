@@ -8,7 +8,7 @@ namespace MangoFusion_API.Models
 
         public bool IsSuccess { get; set; } = true;
 
-        public List<string>? ErrorMessages { get; set; }
+        public List<string> ErrorMessages { get; set; } = new();
 
         public object? Result { get; set; }
     }
