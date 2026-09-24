@@ -1,10 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { getUserInfoFromJWT, isJWTValid } from "../../utilities/jwtDecoder";
-
-const STORAGE_KEYS = {
-  TOKEN: "token",
-  USER: "user",
-};
+import { STORAGE_KEYS } from "../../utilities/constants";
 
 const getInitialAuthState = () => {
   const storedToken = localStorage.getItem(STORAGE_KEYS.TOKEN);

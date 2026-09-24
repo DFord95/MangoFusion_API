@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { API_BASE_URL } from "../../utilities/constants";
+import { API_BASE_URL, STORAGE_KEYS } from "../../utilities/constants";
 
 // Base API configuration for the application
 
@@ -9,6 +9,10 @@ const baseQuery = fetchBaseQuery({
 
   prepareHeaders: (headers, { getState }) => {
     // Add authentication headers if needed
+    const token = localStorage.getItem(STORAGE_KEYS.TOKEN);
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
     return headers;
   },
 });

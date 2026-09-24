@@ -9,14 +9,14 @@ using System.Net;
 namespace MangoFusion_API.Controllers
 {
     [ApiController, Route("api/[controller]")]
-    public class OrderHeaderController : Controller
+    public class OrderHeadersController : Controller
     {
         private readonly ApiResponse _response;
         private readonly ApplicationDbContext _db;
         private readonly IWebHostEnvironment _env;
-        private readonly ILogger<OrderHeaderController> _logger;
+        private readonly ILogger<OrderHeadersController> _logger;
 
-        public OrderHeaderController(ApplicationDbContext db, IWebHostEnvironment env, ILogger<OrderHeaderController> logger)
+        public OrderHeadersController(ApplicationDbContext db, IWebHostEnvironment env, ILogger<OrderHeadersController> logger)
         {
             _db = db;
             _env = env;

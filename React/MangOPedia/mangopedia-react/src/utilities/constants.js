@@ -28,3 +28,8 @@ export const SPECIAL_TAGS = [
   "New Arrival",
   "Seasonal",
 ];
+
+export const STORAGE_KEYS = {
+  TOKEN: "token",
+  USER: "user",
+};

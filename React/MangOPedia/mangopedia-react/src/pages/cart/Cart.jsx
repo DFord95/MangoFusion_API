@@ -7,6 +7,7 @@ import {
   removeFromCart,
 } from "../../store/slice/cartSlice";
 import { API_BASE_URL } from "../../utilities/constants";
+import { useCreateOrderMutation } from "../../store/api/orderApi";
 import { toast } from "react-toastify";
 
 function Cart() {
@@ -60,8 +61,7 @@ function Cart() {
 
   const redirectToHome = useNavigate();
 
-  // const [userRegistration, { isLoading, error }] =
-  //   useUserRegistrationMutation();
+  const [createOrder, { isLoading, error }] = useCreateOrderMutation();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -96,18 +96,40 @@ function Cart() {
       return;
     }
 
-    const registeredData = await userRegistration({
+    if (!user?.id) {
+      toast.error("You must be logged in to place an order");
+      return;
+    }
+
+    const orderData = {
       pickUpName: formData.pickUpName,
       pickUpEmail: formData.pickUpEmail,
       pickUpPhoneNumber: formData.pickUpPhoneNumber,
-    });
+      applicationUserId: user?.id,
+      orderTotal: totalPrice,
+      totalItems: totalItems,
+      orderDetailsDTO: cartItems.map((item) => ({
+        menuItemId: item.id,
+        itemName: item.name,
+        price: item.price,
+        quantity: item.quantity,
+      })),
+    };
 
-    if (registeredData.error) {
-      // console.log(error);
-      toast.error(error?.data?.errorMessages?.[0] || "Registration failed");
-    } else {
-      toast.success("Registration successful");
-      redirectToHome("/");
+    console.log(orderData);
+    const orderResponse = await createOrder(orderData);
+
+    if (orderResponse.error) {
+      toast.error(
+        orderResponse.error?.data?.errorMessages?.[0] ||
+          "Failed to place order",
+      );
+      return;
+    }
+
+    if (orderResponse.data?.isSuccess) {
+      toast.success("Order placed successfully!");
+      //redirectToHome("/");
     }
   };
 

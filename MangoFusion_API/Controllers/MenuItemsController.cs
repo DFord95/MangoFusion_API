@@ -8,14 +8,14 @@ using System.Net;
 namespace MangoFusion_API.Controllers
 {
     [ApiController, Route("api/MenuItem")]
-    public class MenuItemController : Controller
+    public class MenuItemsController : Controller
     {
         private readonly ApiResponse _response;
         private readonly ApplicationDbContext _db;
         private readonly IWebHostEnvironment _env;
-        private readonly ILogger<MenuItemController> _logger;
+        private readonly ILogger<MenuItemsController> _logger;
 
-        public MenuItemController(ApplicationDbContext db, IWebHostEnvironment env, ILogger<MenuItemController> logger)
+        public MenuItemsController(ApplicationDbContext db, IWebHostEnvironment env, ILogger<MenuItemsController> logger)
         {
             _db = db;
             _env = env;
