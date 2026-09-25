@@ -1,8 +1,14 @@
 import { ROLES } from "../../utilities/constants";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { useUserRegistrationMutation } from "../../store/api/authApi";
+import {
+  useUserLoginMutation,
+  useUserRegistrationMutation,
+} from "../../store/api/authApi";
+import { setAuthState } from "../../store/slice/authSlice";
+import { getUserInfoFromJWT } from "../../utilities/jwtDecoder";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -17,9 +23,11 @@ function Register() {
   });
 
   const redirectToHome = useNavigate();
+  const dispatch = useDispatch();
 
   const [userRegistration, { isLoading, error }] =
     useUserRegistrationMutation();
+  const [userLogin] = useUserLoginMutation();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,8 +80,23 @@ function Register() {
 
     if (registeredData.error) {
       // console.log(error);
-      toast.error(error?.data?.errorMessages?.[0] || "Registration failed");
+      toast.error(
+        registeredData.error?.data?.errorMessages?.[0] || "Registration failed",
+      );
     } else {
+      const loginData = await userLogin({
+        email: formData.email,
+        password: formData.password,
+      });
+      const token = loginData.data?.result?.token;
+      const user = getUserInfoFromJWT(token);
+
+      if (loginData.error || !loginData.data?.isSuccess || !user) {
+        toast.error("Account created, but sign-in failed. Please sign in.");
+        return;
+      }
+
+      dispatch(setAuthState({ user, token, isAuthenticated: true }));
       toast.success("Registration successful");
       redirectToHome("/");
     }

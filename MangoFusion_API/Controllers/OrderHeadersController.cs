@@ -201,9 +201,9 @@ namespace MangoFusion_API.Controllers
                             orderHeaderFromDb.OrderStatus = SD.status_completed;
                         }
 
-                        if(string.Equals(orderHeaderDTO.OrderStatus, SD.status_cancelled, StringComparison.InvariantCultureIgnoreCase))
+                        if(string.Equals(orderHeaderDTO.OrderStatus, SD.status_canceled, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            orderHeaderFromDb.OrderStatus = SD.status_cancelled;
+                            orderHeaderFromDb.OrderStatus = SD.status_canceled;
                         }
                     }
 

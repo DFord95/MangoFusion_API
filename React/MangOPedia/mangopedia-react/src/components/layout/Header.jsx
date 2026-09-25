@@ -57,12 +57,14 @@ function Header() {
               >
                 <i className="bi bi-cart3 fs-5"></i>
 
-                <span
-                  className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white shadow-sm"
-                  style={{ fontSize: "0.7rem" }}
-                >
-                  {totalItems > 0 ? totalItems : "0"}
-                </span>
+                {isAuthenticated && totalItems > 0 && (
+                  <span
+                    className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger text-white shadow-sm"
+                    style={{ fontSize: "0.7rem" }}
+                  >
+                    {totalItems > 0 ? totalItems : ""}
+                  </span>
+                )}
               </NavLink>
             </li>
 

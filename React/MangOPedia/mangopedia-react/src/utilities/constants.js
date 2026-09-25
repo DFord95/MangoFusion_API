@@ -33,3 +33,33 @@ export const STORAGE_KEYS = {
   TOKEN: "token",
   USER: "user",
 };
+
+export const ORDER_STATUS = {
+  CONFIRMED: "Confirmed",
+  READY_FOR_PICKUP: "Ready for Pickup",
+  COMPLETED: "Completed",
+  CANCELED: "Canceled",
+};
+
+export const ORDER_STATUS_VALUE_OPTIONS = [
+  {
+    value: "Confirmed",
+    label: "Confirmed",
+    color: "info",
+  },
+  {
+    value: "Ready for Pickup",
+    label: "Ready for Pickup",
+    color: "warning",
+  },
+  {
+    value: "Completed",
+    label: "Completed",
+    color: "success",
+  },
+  {
+    value: "Canceled",
+    label: "Canceled",
+    color: "danger",
+  },
+];

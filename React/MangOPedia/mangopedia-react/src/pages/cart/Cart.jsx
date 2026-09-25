@@ -12,7 +12,6 @@ import { toast } from "react-toastify";
 
 function Cart() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const {
     items: cartItems,
@@ -59,7 +58,7 @@ function Cart() {
     pickUpPhoneNumber: "",
   });
 
-  const redirectToHome = useNavigate();
+  const redirectTo = useNavigate();
 
   const [createOrder, { isLoading, error }] = useCreateOrderMutation();
 
@@ -117,6 +116,7 @@ function Cart() {
     };
 
     console.log(orderData);
+
     const orderResponse = await createOrder(orderData);
 
     if (orderResponse.error) {
@@ -128,8 +128,21 @@ function Cart() {
     }
 
     if (orderResponse.data?.isSuccess) {
+      console.log(orderResponse.data);
       toast.success("Order placed successfully!");
-      //redirectToHome("/");
+      redirectTo("/order-confirmation", {
+        state: {
+          orderData: {
+            orderNumber: orderResponse.data?.result?.orderHeaderId,
+            pickUpName: formData.pickUpName,
+            pickUpEmail: formData.pickUpEmail,
+            pickUpPhoneNumber:
+              orderResponse.data?.result?.pickUpPhoneNumber,
+            totalItems: totalItems,
+            orderTotal: totalPrice,
+          },
+        },
+      });
     }
   };
 
@@ -402,11 +415,22 @@ function Cart() {
 
                     {/* Place Order Button */}
                     <div className="d-grid">
-                      <button className="btn btn-primary btn-lg" type="submit">
-                        <span className="spinner-border spinner-border-sm me-2"></span>
-                        Processing...
-                        <i className="bi bi-credit-card me-2"></i>
-                        Place Order (${totalPrice.toFixed(2)})
+                      <button
+                        className="btn btn-primary btn-lg"
+                        type="submit"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <>
+                            <span className="spinner-border spinner-border-sm me-2"></span>
+                            Processing...
+                          </>
+                        ) : (
+                          <>
+                            <i className="bi bi-credit-card me-2"></i>
+                            Place Order (${totalPrice.toFixed(2)})
+                          </>
+                        )}
                       </button>
                     </div>
                   </div>

@@ -6,7 +6,7 @@ import {
   useDeleteMenuItemMutation,
 } from "../../store/api/menuItemApi";
 import { toast } from "react-toastify";
-import MenuItemModal from "../../components/menuItems/MenuItemModal";
+import MenuItemsModal from "../../components/menuItems/MenuItemsModal";
 import { useState } from "react";
 import Swal from "sweetalert2";
 
