@@ -24,7 +24,11 @@ function OrderManagement() {
     error,
     isLoading,
     refetch,
-  } = useGetOrdersQuery(userId, { refetchOnMountOrArgChange: true });
+  } = useGetOrdersQuery(userId, {
+    refetchOnMountOrArgChange: true,
+    pollingInterval: 5000,
+    skipPollingIfUnfocused: true,
+  });
 
   const [updateOrder] = useUpdateOrderMutation();
 
@@ -168,7 +172,11 @@ function OrderManagement() {
       {showModal && (
         <OrderDetailsModal
           isAdmin={isAdmin}
-          formData={selectedOrder}
+          formData={
+            orders.find(
+              (order) => order.orderHeaderId === selectedOrder.orderHeaderId,
+            ) || selectedOrder
+          }
           onClose={handleFormClose}
           onSubmit={handleFormChange}
           isSubmitting={isSubmitting}

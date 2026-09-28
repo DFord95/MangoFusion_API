@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../store/slice/cartSlice";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useGetMenuItemByIdQuery } from "../../store/api/menuItemApi";
 import { API_BASE_URL } from "../../utilities/constants";
 
@@ -155,6 +155,12 @@ function MenuItemDetails() {
                     <div className="h2 text-primary fw-bold mb-0">
                       ${selectedMenuItem.price.toFixed(2)}
                     </div>
+                    {selectedMenuItem.rating > 0 && (
+                      <span className="badge bg-warning text-dark mt-2 px-2 py-1">
+                        {selectedMenuItem.rating.toFixed(1)}
+                        <i className="bi bi-star-fill ms-1"></i>
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -231,10 +237,10 @@ function MenuItemDetails() {
                             Add to Cart
                           </button>
 
-                          <button className="btn btn-outline-primary">
+                          <Link to="/" className="btn btn-outline-primary">
                             <i className="bi bi-arrow-left me-2"></i>
                             Continue Shopping
-                          </button>
+                          </Link>
                         </div>
                       </div>
                     </div>

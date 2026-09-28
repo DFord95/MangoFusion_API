@@ -1,6 +1,10 @@
 import { ORDER_STATUS } from "../../utilities/constants";
+import { useSelector } from "react-redux";
 import { getConditionalOrderStatusColor } from "../../utilities/helperFunc";
 import { formatPhoneNumber, formatDate } from "../../utilities/formatters";
+import { useUpdateOrderDetailsMutation } from "../../store/api/orderApi";
+import { toast } from "react-toastify";
+import Ratings from "../ui/Rating";
 
 function OrderDetailsModal({
   isAdmin,
@@ -11,6 +15,26 @@ function OrderDetailsModal({
   updateOrderDetails,
   onUpdateOrderDetails,
 }) {
+  const { user } = useSelector((state) => state.auth);
+
+  const canRate =
+    formData?.orderStatus === ORDER_STATUS.COMPLETED &&
+    formData?.applicationUserId === user?.id;
+
+  const [saveRating] = useUpdateOrderDetailsMutation();
+
+  const handleRatingChange = async (orderDetailsId, newRating) => {
+    try {
+      await saveRating({ orderDetailsId, rating: newRating }).unwrap();
+      toast.success(
+        `Rating of ${newRating} star${newRating !== 1 ? "s" : ""} submitted successfully!`,
+      );
+    } catch (error) {
+      console.error("Error submitting rating:", error);
+      toast.error("Failed to submit rating. Please try again.");
+    }
+  };
+
   return (
     <>
       <div className="modal-backdrop fade show" />
@@ -130,10 +154,12 @@ function OrderDetailsModal({
                 <div className="border rounded-3 p-3 mb-3">
                   <div className="d-flex align-items-center justify-content-between mb-3">
                     <h6 className="fw-bold mb-0">Items</h6>
-                    <span className="badge bg-success-subtle text-success px-3 py-2">
-                      <i className="bi bi-star me-1"></i>
-                      You can now rate your items
-                    </span>
+                    {canRate && (
+                      <span className="badge bg-success-subtle text-success px-3 py-2">
+                        <i className="bi bi-star me-1"></i>
+                        You can now rate your items
+                      </span>
+                    )}
                   </div>
                   <div className="vstack gap-3">
                     {formData?.orderDetails?.length > 0 ? (
@@ -152,19 +178,39 @@ function OrderDetailsModal({
                           </div>
 
                           {/* Rating section for completed orders */}
-                          <div className="mt-3 pt-3 border-top bg-light rounded p-3">
-                            <div className="d-flex align-items-center justify-content-between">
-                              <div>
-                                <h6 className="mb-1 fw-semibold small text-primary">
-                                  <i className="bi bi-star me-1"></i>
-                                  Rate this item
-                                </h6>
-                                <p className="mb-2 small text-muted">
-                                  How was your experience with this item?
-                                </p>
+                          {canRate && (
+                            <div className="mt-3 pt-3 border-top bg-light rounded p-3">
+                              <div className="d-flex align-items-center justify-content-between">
+                                <div>
+                                  <h6 className="mb-1 fw-semibold small text-primary">
+                                    <i className="bi bi-star me-1"></i>
+                                    Rate this item
+                                  </h6>
+                                  <p className="mb-2 small text-muted">
+                                    How was your experience with this item?
+                                  </p>
+                                </div>
+                                <div className="text-end">
+                                  <Ratings
+                                    value={item.rating ?? 0}
+                                    size="small"
+                                    onChange={(newRating) =>
+                                      handleRatingChange(
+                                        item.orderDetailsId,
+                                        newRating,
+                                      )
+                                    }
+                                  />
+                                  {item.rating > 0 && (
+                                    <div className="small text-success mt-1">
+                                      <i className="bi bi-check-circle-fill me-1"></i>
+                                      Rated: {item.rating.toFixed(1)}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       ))
                     ) : (

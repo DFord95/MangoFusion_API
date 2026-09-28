@@ -1,5 +1,6 @@
 import { useGetMenuItemsQuery } from "../store/api/menuItemApi";
 import { API_BASE_URL, CATEGORIES } from "../utilities/constants";
+import Carousel from "../components/ui/Carousel";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -47,8 +48,9 @@ function Home() {
   });
 
   return (
-    <div className="container-fluid px-0 py-4">
+    <div className="container-fluid px-0">
       {/* Hero Section */}
+      <Carousel />
 
       <div className="container" id="menu">
         {/* Filters */}
@@ -164,6 +166,11 @@ function Home() {
                         <span className="badge text-secondary border px-2 py-1 small">
                           {item.category}
                         </span>
+                        {item.rating > 0 && (
+                          <span className="badge bg-warning text-dark px-2 py-1 small">
+                            {item.rating.toFixed(1)} ★
+                          </span>
+                        )}
                       </div>
 
                       {/* Description */}
