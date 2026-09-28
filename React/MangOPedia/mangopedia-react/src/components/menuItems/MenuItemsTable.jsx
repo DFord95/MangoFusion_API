@@ -1,12 +1,18 @@
 import { API_BASE_URL } from "../../utilities/constants";
+import Pagination from "../ui/Pagination";
 
 function MenuItemsTable({
   menuItems,
   isLoading,
   error,
-  refetch,
   onEdit,
   onDelete,
+  currentPage,
+  totalPages,
+  totalItems,
+  itemsPerPage,
+  onPageChange,
+  onItemsPerPageChange,
 }) {
   if (isLoading) {
     return (
@@ -83,7 +89,7 @@ function MenuItemsTable({
                   <strong>${menuItem.price}</strong>
                 </td>
                 <td>
-                  <span className="badge bg-warning text-dark">
+                  <span className="badge bg-warning">
                     {menuItem.specialTag}
                   </span>
                 </td>
@@ -110,6 +116,15 @@ function MenuItemsTable({
           </tbody>
         </table>
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+        onPageChange={onPageChange}
+        onItemsPerPageChange={onItemsPerPageChange}
+        ariaLabel="Menu item pages"
+      />
     </>
   );
 }

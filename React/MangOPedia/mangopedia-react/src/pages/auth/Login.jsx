@@ -1,9 +1,8 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Link, Navigate, useNavigate, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useUserLoginMutation } from "../../store/api/authApi";
-import { ROLES } from "../../utilities/constants";
 import { setAuthState } from "../../store/slice/authSlice";
 import { getUserInfoFromJWT } from "../../utilities/jwtDecoder";
 
@@ -14,7 +13,9 @@ function Login() {
   });
 
   const redirectToHome = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const [userLogin, { isLoading, error }] = useUserLoginMutation();
 
@@ -56,13 +57,20 @@ function Login() {
           isAuthenticated: true,
         }),
       );
+
+      const from = location.state?.from?.pathname || "/";
+
       // console.log(loginData);
-      redirectToHome("/");
+      redirectToHome(from, { replace: true });
     }
   };
 
+  if (isAuthenticated) {
+    return <Navigate to={location.state?.from?.pathname || "/"} replace />;
+  }
+
   return (
-    <div className="min-vh-100 d-flex align-items-center bg-body-tertiary py-5">
+    <div className="min-vh-100 d-flex align-items-center py-5">
       <div className="container">
         <div className="row g-5 align-items-center justify-content-center">
           {/* Marketing / Side Panel (desktop) */}
@@ -102,7 +110,7 @@ function Login() {
 
           {/* Form Panel */}
           <div className="col-md-8 col-lg-6 col-xl-5">
-            <div className="border rounded-4 shadow-sm p-4 p-lg-5">
+            <div className="border rounded-4 shadow-sm p-4 p-lg-5 bg-body-tertiary">
               <div className="mb-4 text-center">
                 <h3 className="fw-bold mb-1">Sign In</h3>
                 <p className="text-muted small mb-0">Access your account</p>

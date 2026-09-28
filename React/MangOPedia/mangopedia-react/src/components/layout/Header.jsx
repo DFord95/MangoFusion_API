@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/slice/authSlice";
 
-function Header() {
+function Header({ onToggleTheme }) {
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logout());
@@ -148,6 +148,15 @@ function Header() {
                 </li>
               </>
             )}
+            <li className="nav-item me-lg-3">
+              <button
+                onClick={onToggleTheme}
+                className="nav-link btn btn-link"
+                aria-label="Toggle color theme"
+              >
+                <i className="bi bi-moon-stars fs-4"></i>
+              </button>
+            </li>
           </ul>
         </div>
       </div>

@@ -3,6 +3,7 @@ import { baseApi } from "./api/baseApi";
 import { menuItemsApi } from "./api/menuItemApi";
 import authReducer from "./slice/authSlice";
 import cartReducer from "./slice/cartSlice";
+import themeReducer from "./slice/themeSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     [menuItemsApi.reducerPath]: menuItemsApi.reducer,
     auth: authReducer,
     cart: cartReducer,
+    theme: themeReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(baseApi.middleware),

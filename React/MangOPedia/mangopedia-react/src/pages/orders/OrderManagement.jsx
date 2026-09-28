@@ -41,6 +41,13 @@ function OrderManagement() {
 
   const [statusFilter, setStatusFilter] = useState("");
   const [searchFilter, setSearchFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const handleItemsPerPageChange = (size) => {
+    setItemsPerPage(size);
+    setCurrentPage(1);
+  };
 
   const handleEditOrder = (order) => {
     setUpdateOrderDetails({ orderStatus: "" });
@@ -61,6 +68,12 @@ function OrderManagement() {
       : true;
     return matchesStatus && matchesSearch;
   });
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
+  const visiblePage = Math.min(currentPage, Math.max(totalPages, 1));
+  const pageOrders = filteredOrders.slice(
+    (visiblePage - 1) * itemsPerPage,
+    visiblePage * itemsPerPage,
+  );
 
   //console.log(orders);
 
@@ -129,7 +142,10 @@ function OrderManagement() {
                   placeholder="Search by name, email, or phone..."
                   style={{ minWidth: "350px" }}
                   value={searchFilter}
-                  onChange={(e) => setSearchFilter(e.target.value)}
+                  onChange={(e) => {
+                    setSearchFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
                 />
               </div>
               <div>
@@ -140,7 +156,10 @@ function OrderManagement() {
                   className="form-select"
                   style={{ minWidth: "200px" }}
                   value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
+                  onChange={(e) => {
+                    setStatusFilter(e.target.value);
+                    setCurrentPage(1);
+                  }}
                 >
                   <option value="">All Orders</option>
                   {ORDER_STATUS_VALUE_OPTIONS.map((status) => (
@@ -159,11 +178,16 @@ function OrderManagement() {
           <div className="card">
             <div className="card-body">
               <OrdersTable
-                orders={filteredOrders}
+                orders={pageOrders}
                 isLoading={isLoading}
                 error={error}
-                refetch={refetch}
                 onEdit={handleEditOrder}
+                currentPage={visiblePage}
+                totalPages={totalPages}
+                totalItems={filteredOrders.length}
+                itemsPerPage={itemsPerPage}
+                onPageChange={setCurrentPage}
+                onItemsPerPageChange={handleItemsPerPageChange}
               />
             </div>
           </div>

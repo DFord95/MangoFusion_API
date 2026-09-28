@@ -1,7 +1,19 @@
 import { getConditionalOrderStatusColor } from "../../utilities/helperFunc";
 import { formatDate, formatPhoneNumber } from "../../utilities/formatters";
+import Pagination from "../ui/Pagination";
 
-function OrdersTable({ orders, isLoading, error, refetch, onEdit }) {
+function OrdersTable({
+  orders,
+  isLoading,
+  error,
+  onEdit,
+  currentPage,
+  totalPages,
+  totalItems,
+  itemsPerPage,
+  onPageChange,
+  onItemsPerPageChange,
+}) {
   if (isLoading) {
     return (
       <div className="text-center py-4">
@@ -94,6 +106,14 @@ function OrdersTable({ orders, isLoading, error, refetch, onEdit }) {
           </tbody>
         </table>
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        itemsPerPage={itemsPerPage}
+        onPageChange={onPageChange}
+        onItemsPerPageChange={onItemsPerPageChange}
+      />
     </>
   );
 }

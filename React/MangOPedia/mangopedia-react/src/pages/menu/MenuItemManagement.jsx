@@ -21,6 +21,19 @@ function MenuItemManagement() {
   const [showModal, setShowModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedMenuItem, setSelectedMenuItem] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const totalPages = Math.ceil(menuItems.length / itemsPerPage);
+  const visiblePage = Math.min(currentPage, Math.max(totalPages, 1));
+  const pageMenuItems = menuItems.slice(
+    (visiblePage - 1) * itemsPerPage,
+    visiblePage * itemsPerPage,
+  );
+
+  const handleItemsPerPageChange = (size) => {
+    setItemsPerPage(size);
+    setCurrentPage(1);
+  };
 
   const [createMenuItem] = useCreateMenuItemMutation();
   const [updateMenuItem] = useUpdateMenuItemMutation();
@@ -184,19 +197,24 @@ function MenuItemManagement() {
           <div className="card">
             <div className="card-body">
               <MenuItemsTable
-                menuItems={menuItems}
+                menuItems={pageMenuItems}
                 isLoading={isLoading}
                 error={error}
-                refetch={refetch}
                 onEdit={handleEditMenuItem}
                 onDelete={handleDeleteMenuItem}
+                currentPage={visiblePage}
+                totalPages={totalPages}
+                totalItems={menuItems.length}
+                itemsPerPage={itemsPerPage}
+                onPageChange={setCurrentPage}
+                onItemsPerPageChange={handleItemsPerPageChange}
               />
             </div>
           </div>
         </div>
       </div>
       {showModal && (
-        <MenuItemModal
+        <MenuItemsModal
           onClose={handleAddMenuItem}
           isSubmitting={isSubmitting}
           formData={formData}

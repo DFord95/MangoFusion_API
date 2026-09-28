@@ -122,7 +122,7 @@ function MenuItemDetails() {
                 />
                 {selectedMenuItem.specialTag && (
                   <div className="position-absolute top-0 start-0 m-3">
-                    <span className="badge bg-warning text-dark px-3 py-2 rounded-pill shadow-sm fs-6">
+                    <span className="badge bg-warning px-3 py-2 rounded-pill shadow-sm fs-6">
                       {selectedMenuItem.specialTag}
                     </span>
                   </div>
@@ -138,7 +138,7 @@ function MenuItemDetails() {
               <div className="mb-4">
                 <div className="d-flex align-items-start justify-content-between mb-3">
                   <div>
-                    <h1 className="display-6 fw-bold mb-2 text-dark">
+                    <h1 className="display-6 fw-bold mb-2">
                       {selectedMenuItem.name}
                     </h1>
                     <div className="d-flex align-items-center gap-3 mb-2">
@@ -156,7 +156,7 @@ function MenuItemDetails() {
                       ${selectedMenuItem.price.toFixed(2)}
                     </div>
                     {selectedMenuItem.rating > 0 && (
-                      <span className="badge bg-warning text-dark mt-2 px-2 py-1">
+                      <span className="badge bg-warning mt-2 px-2 py-1">
                         {selectedMenuItem.rating.toFixed(1)}
                         <i className="bi bi-star-fill ms-1"></i>
                       </span>

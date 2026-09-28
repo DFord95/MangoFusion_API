@@ -103,7 +103,7 @@ function Register() {
   };
 
   return (
-    <div className="min-vh-100 d-flex align-items-center bg-body-tertiary py-5">
+    <div className="min-vh-100 d-flex align-items-center py-5">
       <div className="container">
         <div className="row g-5 align-items-center justify-content-center">
           {/* Marketing Panel */}
@@ -138,7 +138,7 @@ function Register() {
           </div>
 
           <div className="col-md-9 col-lg-6 col-xl-5">
-            <div className="border rounded-4 shadow-sm p-4 p-lg-5">
+            <div className="border rounded-4 shadow-sm p-4 p-lg-5 bg-body-tertiary">
               <div className="mb-4 text-center">
                 <h3 className="fw-bold mb-1">Create Account</h3>
                 <p className="text-muted small mb-0">Sign up to get started</p>

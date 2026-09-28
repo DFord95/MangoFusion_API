@@ -43,7 +43,14 @@ const AppRoutes = () => {
         }
       />
       <Route path={ROUTES.ORDER_CONFIRMATION} element={<OrderConfirmation />} />
-      <Route path={ROUTES.ORDER_MANAGEMENT} element={<OrderManagement />} />
+      <Route
+        path={ROUTES.ORDER_MANAGEMENT}
+        element={
+          <RoleBasedRouter allowedRoles={["Admin"]}>
+            <OrderManagement />
+          </RoleBasedRouter>
+        }
+      />
     </Routes>
   );
 };
