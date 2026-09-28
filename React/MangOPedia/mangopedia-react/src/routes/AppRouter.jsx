@@ -2,6 +2,9 @@ import { Routes, Route } from "react-router-dom";
 import MenuItemDetails from "../pages/menu/MenuItemDetails";
 import Home from "../pages/Home";
 import Login from "../pages/auth/Login";
+import ForgotPassword from "../pages/auth/ForgotPassword";
+import ResetPassword from "../pages/auth/ResetPassword";
+import ConfirmEmail from "../pages/auth/ConfirmEmail";
 import Register from "../pages/auth/Register";
 import Cart from "../pages/cart/Cart";
 import CheckOut from "../pages/cart/CheckOut";
@@ -16,6 +19,9 @@ const AppRoutes = () => {
     <Routes>
       <Route path={ROUTES.HOME} element={<Home />} />
       <Route path={ROUTES.LOGIN} element={<Login />} />
+      <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
+      <Route path={ROUTES.RESET_PASSWORD} element={<ResetPassword />} />
+      <Route path={ROUTES.CONFIRM_EMAIL} element={<ConfirmEmail />} />
       <Route path={ROUTES.REGISTER} element={<Register />} />
       <Route
         path={ROUTES.CART}

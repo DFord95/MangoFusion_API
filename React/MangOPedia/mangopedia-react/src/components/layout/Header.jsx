@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../store/slice/authSlice";
 
-function Header({ onToggleTheme }) {
+function Header({ currentTheme, onToggleTheme }) {
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logout());
@@ -152,9 +152,20 @@ function Header({ onToggleTheme }) {
               <button
                 onClick={onToggleTheme}
                 className="nav-link btn btn-link"
-                aria-label="Toggle color theme"
+                aria-label={
+                  currentTheme === "dark"
+                    ? "Switch to light mode"
+                    : "Switch to dark mode"
+                }
+                title={
+                  currentTheme === "dark"
+                    ? "Switch to light mode"
+                    : "Switch to dark mode"
+                }
               >
-                <i className="bi bi-moon-stars fs-4"></i>
+                <i
+                  className={`bi ${currentTheme === "dark" ? "bi-sun" : "bi-moon-stars"} fs-4`}
+                ></i>
               </button>
             </li>
           </ul>

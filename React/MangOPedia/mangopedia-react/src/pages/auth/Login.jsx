@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useUserLoginMutation } from "../../store/api/authApi";
 import { setAuthState } from "../../store/slice/authSlice";
 import { getUserInfoFromJWT } from "../../utilities/jwtDecoder";
+import { ROUTES } from "../../utilities/constants";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -17,7 +18,7 @@ function Login() {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  const [userLogin, { isLoading, error }] = useUserLoginMutation();
+  const [userLogin, { isLoading }] = useUserLoginMutation();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -153,6 +154,19 @@ function Login() {
                       </label>
                     </div>
                   </div>
+                </div>
+
+                <div className="d-flex flex-wrap justify-content-between gap-2 mb-3 small">
+                  <Link
+                    to={
+                      formData.email
+                        ? `${ROUTES.CONFIRM_EMAIL}?${new URLSearchParams({ email: formData.email })}`
+                        : ROUTES.CONFIRM_EMAIL
+                    }
+                  >
+                    Confirm email
+                  </Link>
+                  <Link to="/forgot-password">Forgot password?</Link>
                 </div>
 
                 <button

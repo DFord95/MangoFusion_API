@@ -5,9 +5,12 @@ using MangoFusion_API.Utilities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 
@@ -21,12 +24,16 @@ namespace MangoFusion_API.Controllers
         private readonly ILogger<AuthController> _logger;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
 
-        public AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<AuthController> logger, IConfiguration configuration)
+        public AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ILogger<AuthController> logger, IConfiguration configuration, IWebHostEnvironment environment)
         {
             _logger = logger;
             _userManager = userManager;
             _roleManager = roleManager;
+            _configuration = configuration;
+            _environment = environment;
             _response = new ApiResponse();
             secretKey = configuration.GetValue<string>("ApiSettings:Secret") ?? "";
         }
@@ -36,6 +43,12 @@ namespace MangoFusion_API.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (!IsMailConfigured())
+                {
+                    _logger.LogError("Account email is not configured.");
+                    return StatusCode(StatusCodes.Status503ServiceUnavailable);
+                }
+
                 ApplicationUser newUser = new()
                 {
                     FirstName = model.FirstName,
@@ -67,13 +80,18 @@ namespace MangoFusion_API.Controllers
                         await _userManager.AddToRoleAsync(newUser, SD.Role_Customer);
                     }
 
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
+                    var confirmationSent = await SendAccountLinkAsync(newUser.Email!, "confirm-email", token,
+                        "Confirm your MangoFusion email", "Use this link to confirm your email address:");
+
                     _response.StatusCode = HttpStatusCode.OK;
                     _response.IsSuccess = true;
                     _response.Result = new
                     {
                         newUser.Id,
                         newUser.Name,
-                        newUser.Email
+                        newUser.Email,
+                        ConfirmationSent = confirmationSent
                     };
 
                     return Ok(_response);
@@ -106,6 +124,143 @@ namespace MangoFusion_API.Controllers
                 }
 
                 return BadRequest(_response);
+            }
+        }
+
+        [HttpPost("ConfirmEmail")]
+        [EnableRateLimiting("password-reset")]
+        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequestDTO model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            var result = user == null ? null : await _userManager.ConfirmEmailAsync(user, model.Token);
+            if (result?.Succeeded != true)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Invalid or expired confirmation link.");
+                return BadRequest(_response);
+            }
+
+            _response.StatusCode = HttpStatusCode.OK;
+            return Ok(_response);
+        }
+
+        [HttpPost("ResendConfirmation")]
+        [EnableRateLimiting("password-reset")]
+        public async Task<IActionResult> ResendConfirmation([FromBody] ForgotPasswordRequestDTO model)
+        {
+            if (!IsMailConfigured())
+            {
+                _logger.LogError("Account email is not configured.");
+                return StatusCode(StatusCodes.Status503ServiceUnavailable);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user != null && !await _userManager.IsEmailConfirmedAsync(user))
+            {
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                await SendAccountLinkAsync(model.Email, "confirm-email", token,
+                    "Confirm your MangoFusion email", "Use this link to confirm your email address:");
+            }
+
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.Result = "If an unconfirmed account exists for this email, a confirmation link has been sent.";
+            return Ok(_response);
+        }
+
+        [HttpPost("ForgotPassword")]
+        [EnableRateLimiting("password-reset")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDTO model)
+        {
+            if (!IsMailConfigured())
+            {
+                _logger.LogError("Password reset email is not configured.");
+                return StatusCode(StatusCodes.Status503ServiceUnavailable);
+            }
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user != null)
+            {
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                await SendAccountLinkAsync(model.Email, "reset-password", token,
+                    "Reset your MangoFusion password", "Use this link to reset your password:");
+            }
+
+            _response.StatusCode = HttpStatusCode.OK;
+            _response.Result = "If an account exists for this email, a reset link has been sent.";
+            return Ok(_response);
+        }
+
+        [HttpPost("ResetPassword")]
+        [EnableRateLimiting("password-reset")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDTO model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("Invalid or expired reset link.");
+                return BadRequest(_response);
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+            if (!result.Succeeded)
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.AddRange(result.Errors.Select(error => error.Code == "InvalidToken" ? "Invalid or expired reset link." : error.Description));
+                return BadRequest(_response);
+            }
+
+            _response.StatusCode = HttpStatusCode.OK;
+            return Ok(_response);
+        }
+
+        private bool IsMailConfigured()
+        {
+            var clientUrl = _configuration["PasswordReset:ClientUrl"]
+                ?? (_environment.IsDevelopment() ? "http://localhost:5173" : null);
+            var username = _configuration["Smtp:Username"];
+            var useTls = _configuration.GetValue<bool?>("Smtp:EnableSsl") ?? true;
+
+            return !string.IsNullOrWhiteSpace(_configuration["Smtp:Host"]) &&
+                !string.IsNullOrWhiteSpace(_configuration["Smtp:From"]) &&
+                (string.IsNullOrWhiteSpace(username) || (useTls && !string.IsNullOrWhiteSpace(_configuration["Smtp:Password"]))) &&
+                Uri.TryCreate(clientUrl, UriKind.Absolute, out var frontendUri) &&
+                (frontendUri.Scheme == Uri.UriSchemeHttps || (_environment.IsDevelopment() && frontendUri.Scheme == Uri.UriSchemeHttp));
+        }
+
+        private async Task<bool> SendAccountLinkAsync(string email, string path, string token, string subject, string introduction)
+        {
+            var clientUrl = _configuration["PasswordReset:ClientUrl"]
+                ?? (_environment.IsDevelopment() ? "http://localhost:5173" : null);
+            var url = QueryHelpers.AddQueryString(
+                $"{clientUrl!.TrimEnd('/')}/{path}",
+                new Dictionary<string, string?> { ["email"] = email, ["token"] = token });
+
+            try
+            {
+                using var message = new MailMessage(_configuration["Smtp:From"]!, email)
+                {
+                    Subject = subject,
+                    Body = $"{introduction} {url}\n\nIf you did not request this, you can ignore this email."
+                };
+                using var smtp = new SmtpClient(_configuration["Smtp:Host"]!, _configuration.GetValue<int?>("Smtp:Port") ?? 587)
+                {
+                    EnableSsl = _configuration.GetValue<bool?>("Smtp:EnableSsl") ?? true
+                };
+                if (!string.IsNullOrWhiteSpace(_configuration["Smtp:Username"]))
+                {
+                    smtp.Credentials = new NetworkCredential(_configuration["Smtp:Username"], _configuration["Smtp:Password"]);
+                }
+                await smtp.SendMailAsync(message);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send an account email.");
+                return false;
             }
         }
 

@@ -35,7 +35,7 @@ function App() {
       className="d-flex flex-column min-vh-100 bg-body"
       style={getThemeStyle()}
     >
-      <Header onToggleTheme={toggleTheme} />
+      <Header currentTheme={currentTheme} onToggleTheme={toggleTheme} />
       <main className="flex-grow-1">
         <AppRoutes />
       </main>
